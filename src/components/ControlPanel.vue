@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { type Ref, inject } from 'vue'
 import { NButton, NFlex, NH1, NH3 } from 'naive-ui'
-import { type Action, type RubikCubeItem, actions } from '@/utils/index.ts'
+import { type Action, type RubikCubeData, type RubikCubeState, actions } from '@/utils/index.ts'
 
-const data = inject<Ref<RubikCubeItem[]>>('data') as Ref<RubikCubeItem[]>
-const state = inject<Ref<number[]>>('state') as Ref<number[]>
+const data = inject<Ref<RubikCubeData>>('data') as Ref<RubikCubeData>
+const state = inject<Ref<RubikCubeState>>('state') as Ref<RubikCubeState>
 
 const handleAction = (action: Action) => {
   console.log(action)
@@ -43,6 +43,6 @@ const handleAction = (action: Action) => {
 
 <style scoped>
 .control-panel {
-  padding: 1em;
+  padding: 2em;
 }
 </style>

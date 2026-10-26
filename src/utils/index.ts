@@ -1,4 +1,9 @@
-export type Matrix4_4 = [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number]
+export type Matrix4_4 = [
+  number, number, number, number,
+  number, number, number, number,
+  number, number, number, number,
+  number, number, number, number,
+]
 
 const originalMatrix3d: Matrix4_4 =  [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
 
@@ -34,8 +39,8 @@ const multiplyMatrix4_4 = (a: Matrix4_4, b: Matrix4_4): Matrix4_4 => {
   ]
 }
 
-const matrixRotate = (state: Matrix4_4, rotation: Rotation): Matrix4_4 => {
-  return multiplyMatrix4_4(state, matrix3dRotations[rotation] as Matrix4_4)
+const matrixRotate = (matrix3d: Matrix4_4, rotation: Rotation): Matrix4_4 => {
+  return multiplyMatrix4_4(matrix3d, matrix3dRotations[rotation] as Matrix4_4)
 }
 
 export type RubikCubeItem = {
@@ -46,7 +51,19 @@ export type RubikCubeItem = {
   label: string,
 }
 
-export const rubikCubeData: RubikCubeItem[] = [
+export type RubikCubeData = [
+  RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem,
+  RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem,
+  RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem, RubikCubeItem,
+]
+
+export type RubikCubeState = [
+  number, number, number, number, number, number, number, number, number,
+  number, number, number, number, number, number, number, number, number,
+  number, number, number, number, number, number, number, number, number,
+]
+
+export const rubikCubeData: RubikCubeData = [
   { tx: -1, ty: -1, tz: -1, matrix3d: [...originalMatrix3d] as Matrix4_4, label: 'left-back-down' },
   { tx:  0, ty: -1, tz: -1, matrix3d: [...originalMatrix3d] as Matrix4_4, label: 'center-back-down' },
   { tx:  1, ty: -1, tz: -1, matrix3d: [...originalMatrix3d] as Matrix4_4, label: 'right-back-down' },
@@ -77,138 +94,138 @@ export const rubikCubeData: RubikCubeItem[] = [
 ]
 
 const commands = {
-  upTurnLeft: (data: RubikCubeItem[], state: number[]) => {
+  upTurnLeft: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
     ;[r, s, t, u, v, w, x, y, z].forEach((i) => {
-      const item = data[i as number] as RubikCubeItem
+      const item = data[i] as RubikCubeItem
       item.matrix3d = matrixRotate(item.matrix3d, 'left')
     })
-    return [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, x, u, r, y, v, s, z, w, t] as number[]
+    return [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, x, u, r, y, v, s, z, w, t]
   },
 
-  upTurnRight: (data: RubikCubeItem[], state: number[]) => {
+  upTurnRight: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
     ;[r, s, t, u, v, w, x, y, z].forEach((i) => {
-      const item = data[i as number] as RubikCubeItem
+      const item = data[i] as RubikCubeItem
       item.matrix3d = matrixRotate(item.matrix3d, 'right')
     })
-    return [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, t, w, z, s, v, y, r, u, x] as number[]
+    return [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, t, w, z, s, v, y, r, u, x]
   },
 
-  frontTurnCW: (data: RubikCubeItem[], state: number[]) => {
+  frontTurnCW: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
     ;[g, h, i, o, p, q, x, y, z].forEach((i) => {
-      const item = data[i as number] as RubikCubeItem
+      const item = data[i] as RubikCubeItem
       item.matrix3d = matrixRotate(item.matrix3d, 'cw')
     })
-    return [a, b, c, d, e, f, i, q, z, j, k, l, m, _, n, h, p, y, r, s, t, u, v, w, g, o, x] as number[]
+    return [a, b, c, d, e, f, i, q, z, j, k, l, m, _, n, h, p, y, r, s, t, u, v, w, g, o, x]
   },
 
-  frontTurnCCW: (data: RubikCubeItem[], state: number[]) => {
+  frontTurnCCW: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
     ;[g, h, i, o, p, q, x, y, z].forEach((i) => {
-      const item = data[i as number] as RubikCubeItem
+      const item = data[i] as RubikCubeItem
       item.matrix3d = matrixRotate(item.matrix3d, 'ccw')
     })
-    return [a, b, c, d, e, f, x, o, g, j, k, l, m, _, n, y, p, h, r, s, t, u, v, w, z, q, i] as number[]
+    return [a, b, c, d, e, f, x, o, g, j, k, l, m, _, n, y, p, h, r, s, t, u, v, w, z, q, i]
   },
 
-  leftTurnUp: (data: RubikCubeItem[], state: number[]) => {
+  leftTurnUp: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
     ;[a, d, g, j, m, o, r, u, x].forEach((i) => {
-      const item = data[i as number] as RubikCubeItem
+      const item = data[i] as RubikCubeItem
       item.matrix3d = matrixRotate(item.matrix3d, 'up')
     })
-    return [r, b, c, j, e, f, a, h, i, u, k, l, m, _, n, d, p, q, x, s, t, o, v, w, g, y, z] as number[]
+    return [r, b, c, j, e, f, a, h, i, u, k, l, m, _, n, d, p, q, x, s, t, o, v, w, g, y, z]
   },
 
-  leftTurnDown: (data: RubikCubeItem[], state: number[]) => {
+  leftTurnDown: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
     ;[a, d, g, j, m, o, r, u, x].forEach((i) => {
-      const item = data[i as number] as RubikCubeItem
+      const item = data[i] as RubikCubeItem
       item.matrix3d = matrixRotate(item.matrix3d, 'down')
     })
-    return [g, b, c, o, e, f, x, h, i, d, k, l, m, _, n, u, p, q, a, s, t, j, v, w, r, y, z] as number[]
+    return [g, b, c, o, e, f, x, h, i, d, k, l, m, _, n, u, p, q, a, s, t, j, v, w, r, y, z]
   },
 
-  rightTurnUp: (data: RubikCubeItem[], state: number[]) => {
+  rightTurnUp: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
     ;[c, f, i, l, n, q, t, w, z].forEach((i) => {
-      const item = data[i as number] as RubikCubeItem
+      const item = data[i] as RubikCubeItem
       item.matrix3d = matrixRotate(item.matrix3d, 'up')
     })
-    return [a, b, t, d, e, l, g, h, c, j, k, w, m, _, n, o, p, f, r, s, z, u, v, q, x, y, i] as number[]
+    return [a, b, t, d, e, l, g, h, c, j, k, w, m, _, n, o, p, f, r, s, z, u, v, q, x, y, i]
   },
 
-  rightTurnDown: (data: RubikCubeItem[], state: number[]) => {
+  rightTurnDown: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
     ;[c, f, i, l, n, q, t, w, z].forEach((i) => {
-      const item = data[i as number] as RubikCubeItem
+      const item = data[i] as RubikCubeItem
       item.matrix3d = matrixRotate(item.matrix3d, 'down')
     })
-    return [a, b, i, d, e, q, g, h, z, j, k, f, m, _, n, o, p, w, r, s, c, u, v, l, x, y, t] as number[]
+    return [a, b, i, d, e, q, g, h, z, j, k, f, m, _, n, o, p, w, r, s, c, u, v, l, x, y, t]
   },
 }
 
 const moves = {
-  turnLeft: (data: RubikCubeItem[], state: number[]) => {
+  turnLeft: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
-    data.forEach(item => {
+    data.forEach((item: RubikCubeItem) => {
       item.matrix3d = matrixRotate(item.matrix3d, 'left')
     })
-    return [g, d, a, h, e, b, i, f, c, o, m, j, p, _, k, q, n, l, x, u, r, y, v, s, z, w, t] as number[]
+    return [g, d, a, h, e, b, i, f, c, o, m, j, p, _, k, q, n, l, x, u, r, y, v, s, z, w, t]
   },
 
-  turnRight: (data: RubikCubeItem[], state: number[]) => {
+  turnRight: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
-    data.forEach(item => {
+    data.forEach((item: RubikCubeItem) => {
       item.matrix3d = matrixRotate(item.matrix3d, 'right')
     })
-    return [c, f, i, b, e, h, a, d, g, l, n, q, k, _, p, j, m, o, t, w, z, s, v, y, r, u, x] as number[]
+    return [c, f, i, b, e, h, a, d, g, l, n, q, k, _, p, j, m, o, t, w, z, s, v, y, r, u, x]
   },
 
-  turnUp: (data: RubikCubeItem[], state: number[]) => {
+  turnUp: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
-    data.forEach(item => {
+    data.forEach((item: RubikCubeItem) => {
       item.matrix3d = matrixRotate(item.matrix3d, 'up')
     })
-    return [r, s, t, j, k, l, a, b, c, u, v, w, m, _, n, d, e, f, x, y, z, o, p, q, g, h, i] as number[]
+    return [r, s, t, j, k, l, a, b, c, u, v, w, m, _, n, d, e, f, x, y, z, o, p, q, g, h, i]
   },
 
-  turnDown: (data: RubikCubeItem[], state: number[]) => {
+  turnDown: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
-    data.forEach(item => {
+    data.forEach((item: RubikCubeItem) => {
       item.matrix3d = matrixRotate(item.matrix3d, 'down')
     })
-    return [g, h, i, o, p, q, x, y, z, d, e, f, m, _, n, u, v, w, a, b, c, j, k, l, r, s, t] as number[]
+    return [g, h, i, o, p, q, x, y, z, d, e, f, m, _, n, u, v, w, a, b, c, j, k, l, r, s, t]
   },
 
-  turnCW: (data: RubikCubeItem[], state: number[]) => {
+  turnCW: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
-    data.forEach(item => {
+    data.forEach((item: RubikCubeItem) => {
       item.matrix3d = matrixRotate(item.matrix3d, 'cw')
     })
-    return [c, l, t, f, n, w, i, q, z, b, k, s, e, _, v, h, p, y, a, j, r, d, m, u, g, o, x] as number[]
+    return [c, l, t, f, n, w, i, q, z, b, k, s, e, _, v, h, p, y, a, j, r, d, m, u, g, o, x]
   },
   
-  turnCCW: (data: RubikCubeItem[], state: number[]) => {
+  turnCCW: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, _, n, o, p, q, r, s, t, u, v, w, x, y, z] = state
-    data.forEach(item => {
+    data.forEach((item: RubikCubeItem) => {
       item.matrix3d = matrixRotate(item.matrix3d, 'ccw')
     })
-    return [r, j, a, u, m, d, x, o, g, s, k, b, v, _, e, y, p, h, t, l, c, w, n, f, z, q, i] as number[]
+    return [r, j, a, u, m, d, x, o, g, s, k, b, v, _, e, y, p, h, t, l, c, w, n, f, z, q, i]
   },
 }
 
 const tools = {
-  reset: (data: RubikCubeItem[]) => {
-    data.forEach(item => {
+  reset: (data: RubikCubeData): RubikCubeState => {
+    data.forEach((item: RubikCubeItem) => {
       item.matrix3d = [...originalMatrix3d]
     })
-    return data.map((_, i) => i)
+    return data.map((_, i) => i) as RubikCubeState
   },
 
-  shuffle: (data: RubikCubeItem[]) => {
+  shuffle: (data: RubikCubeData): RubikCubeState => {
     let state = tools.reset(data)
     const steps = {
       ...commands,
@@ -222,8 +239,8 @@ const tools = {
     return state
   },
 
-  solve: (data: RubikCubeItem[], _state: number[]) => {
-    let finalState = actions.reset(data)
+  solve: (data: RubikCubeData, state: RubikCubeState): RubikCubeState => {
+    let finalState = tools.reset(data)
     // TODO: Implement solve algorithm
     return finalState
   },

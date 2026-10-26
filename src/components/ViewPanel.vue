@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { type Ref, inject } from 'vue'
-import { type RubikCubeItem } from '@/utils/index.ts'
+import { type RubikCubeData } from '@/utils/index.ts'
 import RubikCubeBlock from '@/components/RubikCubeBlock.vue'
 
-const data = inject<Ref<RubikCubeItem[]>>('data') as Ref<RubikCubeItem[]>
+const data = inject<Ref<RubikCubeData>>('data') as Ref<RubikCubeData>
 </script>
 
 <template>

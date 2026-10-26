@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { provide, ref } from 'vue'
 import { darkTheme, NConfigProvider, NFlex } from 'naive-ui'
-import { type RubikCubeItem, rubikCubeData } from '@/utils/index.ts'
+import { type RubikCubeData, type RubikCubeState, rubikCubeData } from '@/utils/index.ts'
 import ControlPanel from '@/components/ControlPanel.vue'
 import ViewPanel from '@/components/ViewPanel.vue'
+import PlainHints from './components/PlainHints.vue'
+import RingHints from './components/RingHints.vue'
 
-provide('data', ref<RubikCubeItem[]>(rubikCubeData))
-provide('state', ref<number[]>(rubikCubeData.map((_, i) => i)))
+provide('data', ref<RubikCubeData>(rubikCubeData))
+provide('state', ref<RubikCubeState>(rubikCubeData.map((_, i) => i) as RubikCubeState))
 </script>
 
 <template>
@@ -14,6 +16,10 @@ provide('state', ref<number[]>(rubikCubeData.map((_, i) => i)))
     <n-flex class="app-content">
       <ControlPanel />
       <ViewPanel />
+      <n-flex vertical class="hints-panel">
+        <PlainHints />
+        <RingHints />
+      </n-flex>
     </n-flex>
   </n-config-provider>
 </template>
